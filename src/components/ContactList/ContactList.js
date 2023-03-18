@@ -1,6 +1,9 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectContactItems, selectFilters } from 'redux/selectors';
-export const ContactList = ({ handleDelete }) => {
+import { deleteContactAction } from 'redux/operations';
+
+export const ContactList = () => {
+  const dispatch = useDispatch();
   const contacts = useSelector(selectContactItems);
   const filter = useSelector(selectFilters);
 
@@ -9,6 +12,10 @@ export const ContactList = ({ handleDelete }) => {
         contact.name.toLowerCase().includes(filter.toLowerCase())
       )
     : contacts;
+
+  const handleDelete = id => {
+    dispatch(deleteContactAction(id));
+  };
 
   return (
     <div>

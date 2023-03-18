@@ -1,12 +1,40 @@
 import PropTypes from 'prop-types';
 import css from './AddContact.module.css';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectGetContact } from 'redux/selectors';
+import { addContactAction, fetchContacts } from 'redux/operations';
 
-export const AddContact = ({
-  handleInputChange,
-  handleSubmit,
-  name,
-  number,
-}) => {
+export const AddContact = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(selectGetContact);
+
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleSubmit = evt => {
+    evt.preventDefault();
+    const contactExist = contacts.items.find(contact => contact.name === name);
+    if (!contactExist) {
+      dispatch(addContactAction({ name, number }));
+    } else {
+      alert(`${name} is already in contacts.`);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  const handleInputChange = evt => {
+    const { name, value } = evt.target;
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    }
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit} className={css.form}>
